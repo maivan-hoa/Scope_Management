@@ -106,7 +106,7 @@ Scope* createScope(Object* owner, Scope* outer) {
   Scope* scope = (Scope*) malloc(sizeof(Scope));
   scope->objList = NULL;
   scope->owner = owner;
-  scope->outer = outer;
+  scope->outer = outer; // phạm vi bao ngoài
   return scope;
 }
 
@@ -268,11 +268,12 @@ void initSymTab(void) {
   Object* param;
 
   symtab = (SymTab*) malloc(sizeof(SymTab));
-  symtab->globalObjectList = NULL;
+  symtab->globalObjectList = NULL; // lưu đối tượng có tính chất toàn cục, 
+                                   // có thể sử dụng mà không cần khai báo như các hàm và thủ tục đọc ghi
   
   obj = createFunctionObject("READC");
   obj->funcAttrs->returnType = makeCharType();
-  addObject(&(symtab->globalObjectList), obj);
+  addObject(&(symtab->globalObjectList), obj); // thêm đối tượng vào danh sách liên kết globalObjectList
 
   obj = createFunctionObject("READI");
   obj->funcAttrs->returnType = makeIntType();
@@ -281,7 +282,7 @@ void initSymTab(void) {
   obj = createProcedureObject("WRITEI");
   param = createParameterObject("i", PARAM_VALUE, obj);
   param->paramAttrs->type = makeIntType();
-  addObject(&(obj->procAttrs->paramList),param);
+  addObject(&(obj->procAttrs->paramList),param); // danh sách liên kết các đối tượng là các tham số truyền vào
   addObject(&(symtab->globalObjectList), obj);
 
   obj = createProcedureObject("WRITEC");

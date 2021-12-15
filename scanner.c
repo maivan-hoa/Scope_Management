@@ -49,33 +49,33 @@ void skipComment() {
 }
 
 Token* readIdentKeyword(void) {
-  Token *token = makeToken(TK_NONE, lineNo, colNo);
+  Token *token = makeToken(TK_NONE, lineNo, colNo); // đặt tạm token đang xét là TK_NONE, sẽ thay lại bên dưới khi đọc hoàn chỉnh
   int count = 1;
 
   token->string[0] = toupper((char)currentChar);
   readChar();
 
-  while ((currentChar != EOF) && 
+  while ((currentChar != EOF) && // đọc liên tiếp cho đến khi ký tự tiếp theo không phải là số hoặc ký tự
 	 ((charCodes[currentChar] == CHAR_LETTER) || (charCodes[currentChar] == CHAR_DIGIT))) {
     if (count <= MAX_IDENT_LEN) token->string[count++] = toupper((char)currentChar);
     readChar();
   }
 
-  if (count > MAX_IDENT_LEN) {
+  if (count > MAX_IDENT_LEN) { // nếu chuỗi đọc vào dài quá 15 ký tự -> báo lỗi tại dòng nào, cột nào, lỗi được định nghĩa trong file error.c
     error(ERR_IDENT_TOO_LONG, token->lineNo, token->colNo);
     return token;
   }
 
-  token->string[count] = '\0';
-  token->tokenType = checkKeyword(token->string);
+  token->string[count] = '\0'; // thêm ký hiệu kết thúc
+  token->tokenType = checkKeyword(token->string); // checkKeyword được định nghĩa trong token.c
 
-  if (token->tokenType == TK_NONE)
+  if (token->tokenType == TK_NONE) // nếu chuỗi đọc được không trùng với từ khóa thì đó là TK_INDENT
     token->tokenType = TK_IDENT;
 
   return token;
 }
 
-Token* readNumber(void) {
+Token* readNumber(void) { // kiểm tra nếu token chứa số rồi đến chữ thì xử lý chưa
   Token *token = makeToken(TK_NUMBER, lineNo, colNo);
   int count = 0;
 
@@ -121,15 +121,17 @@ Token* readConstChar(void) {
 
 Token* getToken(void) {
   Token *token;
-  int ln, cn;
+  int ln, cn; // ln là vị trí dòng, cn là vị trí cột
+              // readChar() được định nghĩa trong reader.c, có nhiệm vụ đọc từng ký tự
 
   if (currentChar == EOF) 
-    return makeToken(TK_EOF, lineNo, colNo);
+    return makeToken(TK_EOF, lineNo, colNo); // được định nghĩa trong token.c, struct Token lưu thông tin của
+                                             // một token
 
-  switch (charCodes[currentChar]) {
-  case CHAR_SPACE: skipBlank(); return getToken();
-  case CHAR_LETTER: return readIdentKeyword();
-  case CHAR_DIGIT: return readNumber();
+  switch (charCodes[currentChar]) { // charCodes được định nghĩa trong charcode.c, lưu tên của 256 ký tự trong bảng mã ASCII
+  case CHAR_SPACE: skipBlank(); return getToken(); // bỏ qua các khoảng trống
+  case CHAR_LETTER: return readIdentKeyword(); // nếu currentChar là ký tự chữ thì xác định xem là định danh hay từ khóa
+  case CHAR_DIGIT: return readNumber(); // nếu currentChar là ký tự số thì token đó là số nguyên
   case CHAR_PLUS: 
     token = makeToken(SB_PLUS, lineNo, colNo);
     readChar(); 
@@ -166,7 +168,7 @@ Token* getToken(void) {
     token = makeToken(SB_EQ, lineNo, colNo);
     readChar(); 
     return token;
-  case CHAR_EXCLAIMATION:
+  case CHAR_EXCLAIMATION: // dấu chấm than
     ln = lineNo;
     cn = colNo;
     readChar();
@@ -202,7 +204,7 @@ Token* getToken(void) {
       readChar();
       return makeToken(SB_ASSIGN, ln, cn);
     } else return makeToken(SB_COLON, ln, cn);
-  case CHAR_SINGLEQUOTE: return readConstChar();
+  case CHAR_SINGLEQUOTE: return readConstChar(); // đọc hằng ký tự. VD: 'a'
   case CHAR_LPAR:
     ln = lineNo;
     cn = colNo;
@@ -234,7 +236,7 @@ Token* getToken(void) {
   }
 }
 
-Token* getValidToken(void) {
+Token* getValidToken(void) { // hàm không nhận tham số, trả về một token đọc được
   Token *token = getToken();
   while (token->tokenType == TK_NONE) {
     free(token);

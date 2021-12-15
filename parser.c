@@ -704,13 +704,12 @@ void compileIndexes(void) {
 }
 
 int compile(char *fileName) {
-  if (openInputStream(fileName) == IO_ERROR)
+  if (openInputStream(fileName) == IO_ERROR)  // báo lỗi nếu không đọc được file
     return IO_ERROR;
 
   currentToken = NULL;
-  lookAhead = getValidToken();
-
-  initSymTab();
+  lookAhead = getValidToken(); // lấy được token PROGRAM
+  initSymTab(); // xây dựng bảng ký hiệu / khởi tạo globalObjectList
 
   compileProgram();
 

@@ -39,10 +39,10 @@ int keywordEq(char *kw, char *string) {
     if (*kw != *string) break;
     kw ++; string ++;
   }
-  return ((*kw == '\0') && (*string == '\0'));
+  return ((*kw == '\0') && (*string == '\0')); // check keywork có giống với chuỗi truyền vào hay không
 }
 
-TokenType checkKeyword(char *string) {
+TokenType checkKeyword(char *string) { // Nếu chuỗi trùng với từ khóa thì trả về từ khóa tương ứng, nếu không trả về TK_NONE
   int i;
   for (i = 0; i < KEYWORDS_COUNT; i++)
     if (keywordEq(keywords[i].string, string)) 
