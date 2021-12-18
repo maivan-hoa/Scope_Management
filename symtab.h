@@ -130,7 +130,7 @@ struct Scope_ { // phạm vi của một block
 typedef struct Scope_ Scope;
 
 struct SymTab_ {
-  Object* program; //chương trình chính
+  Object* program; // khối chương trình chính
   Scope* currentScope; // phạm vi hiện tại
   ObjectNode *globalObjectList; // các đối tượng toàn cục, có thể sử dụng mà không cần khai báo
 };

@@ -95,15 +95,15 @@ Object* checkDeclaredLValueIdent(char* name) {
     error(ERR_UNDECLARED_IDENT,currentToken->lineNo, currentToken->colNo);
 
   switch (obj->kind) {
-  case OBJ_VARIABLE:
-  case OBJ_PARAMETER:
-    break;
-  case OBJ_FUNCTION:
-    if (obj != symtab->currentScope->owner) 
+    case OBJ_VARIABLE:
+    case OBJ_PARAMETER:
+      break;
+    case OBJ_FUNCTION: // hàm được gán lại chỉ trong phạm vị của hàm đó (return của một hàm)
+      if (obj != symtab->currentScope->owner) 
+        error(ERR_INVALID_IDENT,currentToken->lineNo, currentToken->colNo);
+      break;
+    default:
       error(ERR_INVALID_IDENT,currentToken->lineNo, currentToken->colNo);
-    break;
-  default:
-    error(ERR_INVALID_IDENT,currentToken->lineNo, currentToken->colNo);
   }
 
   return obj;

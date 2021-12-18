@@ -27,10 +27,10 @@ typedef enum {
 } TokenType; 
 
 typedef struct {
-  char string[MAX_IDENT_LEN + 1]; // +1 vì biến count đếm các token bắt đầu từ 1
+  char string[MAX_IDENT_LEN + 1]; // lưu các ký tự trong token đọc được, +1 vì biến count đếm các token bắt đầu từ 1
   int lineNo, colNo;
   TokenType tokenType;
-  int value;
+  int value; // giá trị token, trong trường hợp là số, cần chuyển giá trị string bên trên thành số
 } Token;
 
 TokenType checkKeyword(char *string);

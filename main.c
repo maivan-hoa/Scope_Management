@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
   //   return -1;
   // }
 
-  if (compile("tests/example6.kpl") == IO_ERROR) {
+  if (compile("tests/test.kpl") == IO_ERROR) {
     printf("Can\'t read input file!\n");
     return -1;
   }

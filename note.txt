@@ -1,0 +1,98 @@
+** Các struct cần chú ý
+Phần code này chỉ quét qua chương trình xem có đúng ngữ nghĩa hay không, nếu không thì thông báo lỗi
+
+1. Bảng ký hiệu
+SymTab {
+  Object* program; //khối chương trình chính
+  Scope* currentScope; // phạm vi hiện tại
+  ObjectNode *globalObjectList; // các đối tượng toàn cục, có thể sử dụng mà không cần khai báo
+};
+
+2. Các thuộc tính cần lưu cho mỗi đối tượng trong bảng ký hiệu
+Object {
+  char name[MAX_IDENT_LEN];
+  enum ObjectKind kind;
+  union { // thông tin đi kèm với cụ thể kiểu đối tượng bên trên (mỗi đối tượng chỉ thuộc một trong các kiểu bên dưới)
+    ConstantAttributes* constAttrs;
+    VariableAttributes* varAttrs;
+    TypeAttributes* typeAttrs;
+    FunctionAttributes* funcAttrs;
+    ProcedureAttributes* procAttrs;
+    ProgramAttributes* progAttrs;
+    ParameterAttributes* paramAttrs;
+  };
+};
+
+3. Phạm vi của một block
+Scope {
+  ObjectNode *objList; // danh sách các đối tượng trong block (bảng ký hiệu cho block / các đối tượng khác trong block này)
+  Object *owner; // block này là hàm, thủ tục hay chương trình
+  struct Scope_ *outer; // phạm vi bao ngoài
+};
+
+
+
+** Các lỗi cần tạo:
+- ERR_UNDECLARED_IDENT:
+  + checkDeclaredLValueIdent() (file semantics.c)
+    • Khi dùng toán tử assign nhưng định danh vế trái chưa được khai báo / không tìm thấy trong bảng ký hiệu
+  + checkDeclaredIdent() (file semantics.c)
+    • Trong điều kiện if nếu định danh chưa khai báo
+    • Trong vòng for khi giá trị của biến chạy là định danh chưa được khai báo
+    • Trong toán tử gán nhưng định danh vế phải chưa khai báo
+  
+  VD: xóa c1
+
+- ERR_UNDECLARED_CONSTANT:
+  + checkDeclaredConstant() (file semantics.c)
+    • Gán hai hằng cho nhau khi khai báo hằng, nhưng hằng vế phải chưa khai báo
+
+  VD: c2 = c3
+
+- ERR_UNDECLARED_TYPE: 
+  + checkDeclaredType() (file semantics.c)
+    • Gán hai type cho nhau, nhưng type vế phải chưa khai báo
+
+- ERR_UNDECLARED_VARIABLE: 
+  + checkDeclaredVariable() (trong file semantics.c)
+    • Sử dụng biến chạy trong vòng for nhưng chưa khai báo
+
+  VD: trong thủ tục p, gán t2 = t3
+
+- ERR_UNDECLARED_PROCEDURE: 
+  + checkDeclaredProcedure() (file semantics.c)
+    • Khi dùng call để gọi thủ tục, nhưng thủ tục chưa được khai báo / không tìm thấy thủ tục thông qua hàm lookupObject
+  
+  VD: thay tên thủ tục p thành g
+
+- ERR_DUPLICATE_IDENT:
+  + checkFreshIdent() (file semantics.c)
+    • Khi khai báo hai hằng/param/hàm trùng tên
+
+  VD: đổi tên hằng c2 thành c1
+
+
+**
+- Nếu trong khai báo hằng:
+  + Const c1 = 'a';
+          c2 = - c1;
+  -> gây ra lỗi ERR_UNDECLARED_INT_CONSTANT (Undeclared integer constant)
+
+  + Const c1 = 'a';
+          c2 = -'a';
+  -> gây ra lỗi ERR_INVALID_CONSTANT (A constant expected.)
+
+
+** Các luật về phạm vi lồng nhau
+• Toán tử insert vào bảng ký hiệu không được ghi
+đè những khai báo trước
+• Toán tử lookup vào bảng ký hiệu luôn luôn tham
+chiếu luật phạm vi gần nhất
+• Toán tử delete chỉ được xóa khai báo gần nhất
+
+
+- nếu có hàm tên f:
+  + return của hàm có dạng: f := ....
+  + nếu f ở bên trái phép gán/return không phải cùng object với hàm f (trong trường hợp
+    có một biến khác cũng tên là f được định nghĩa trong hàm f -> lookupObject sẽ tìm được object này), 
+    dẫn đến hàm không có return (theo suy đoán)

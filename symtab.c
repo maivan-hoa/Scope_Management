@@ -110,13 +110,13 @@ Scope* createScope(Object* owner, Scope* outer) {
   return scope;
 }
 
-Object* createProgramObject(char *programName) {
+Object* createProgramObject(char *programName) { // Tạo đối tượng/bảng ký hiệu cho chương trình chính
   Object* program = (Object*) malloc(sizeof(Object));
   strcpy(program->name, programName);
   program->kind = OBJ_PROGRAM;
   program->progAttrs = (ProgramAttributes*) malloc(sizeof(ProgramAttributes));
-  program->progAttrs->scope = createScope(program,NULL);
-  symtab->program = program;
+  program->progAttrs->scope = createScope(program,NULL); // phạm vi bao ngoài program là null
+  symtab->program = program; // symtab là bảng ký hiệu được khởi tạo khi compile chương trình
 
   return program;
 }
@@ -314,18 +314,18 @@ void exitBlock(void) {
   symtab->currentScope = symtab->currentScope->outer;
 }
 
-void declareObject(Object* obj) {
-  if (obj->kind == OBJ_PARAMETER) {
+void declareObject(Object* obj) { // đưa đối tượng vào trong bảng ký hiệu
+  if (obj->kind == OBJ_PARAMETER) { // nếu đối tượng là tham số hình thức -> phải chèn vào cả danh sách tham số và đưa vào cả danh sách các đối tượng được định nghĩa trong block
     Object* owner = symtab->currentScope->owner;
     switch (owner->kind) {
-    case OBJ_FUNCTION:
-      addObject(&(owner->funcAttrs->paramList), obj);
-      break;
-    case OBJ_PROCEDURE:
-      addObject(&(owner->procAttrs->paramList), obj);
-      break;
-    default:
-      break;
+      case OBJ_FUNCTION:
+        addObject(&(owner->funcAttrs->paramList), obj);
+        break;
+      case OBJ_PROCEDURE:
+        addObject(&(owner->procAttrs->paramList), obj);
+        break;
+      default:
+        break;
     }
   }
  
