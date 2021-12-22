@@ -41,35 +41,37 @@ Scope {
     • Trong vòng for khi giá trị của biến chạy là định danh chưa được khai báo
     • Trong toán tử gán nhưng định danh vế phải chưa khai báo
   
-  VD: xóa c1
+  VD: trong file example6.kpl, xóa c1
 
 - ERR_UNDECLARED_CONSTANT:
   + checkDeclaredConstant() (file semantics.c)
     • Gán hai hằng cho nhau khi khai báo hằng, nhưng hằng vế phải chưa khai báo
 
-  VD: c2 = c3
+  VD: trong file example6.kpl, c2 = c3
 
 - ERR_UNDECLARED_TYPE: 
   + checkDeclaredType() (file semantics.c)
     • Gán hai type cho nhau, nhưng type vế phải chưa khai báo
 
+  VD: trong file example6.kpl, trong thủ tục p, gán t2 = t3
+
 - ERR_UNDECLARED_VARIABLE: 
   + checkDeclaredVariable() (trong file semantics.c)
     • Sử dụng biến chạy trong vòng for nhưng chưa khai báo
 
-  VD: trong thủ tục p, gán t2 = t3
+  VD: trong file example2.kpl, comment dòng 3 khai báo n
 
 - ERR_UNDECLARED_PROCEDURE: 
   + checkDeclaredProcedure() (file semantics.c)
     • Khi dùng call để gọi thủ tục, nhưng thủ tục chưa được khai báo / không tìm thấy thủ tục thông qua hàm lookupObject
   
-  VD: thay tên thủ tục p thành g
+  VD: trong file example6.kpl, thay tên thủ tục p thành g
 
 - ERR_DUPLICATE_IDENT:
   + checkFreshIdent() (file semantics.c)
     • Khi khai báo hai hằng/param/hàm trùng tên
 
-  VD: đổi tên hằng c2 thành c1
+  VD: trong file example6.kpl, đổi tên hằng c2 thành c1
 
 
 **

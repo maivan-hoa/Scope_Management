@@ -1,12 +1,11 @@
 Program Example6;
-   Const c1 = 'a';
-  	 c2 = 10;
+   Const c1 = 10;
+  	    c1 = 'a';  (* Duplicate identifier. *)
    Type t1 = array(. 10 .) of integer;
    Var v1 : Integer;
        v2 : Array(. 10 .) of t1;
 
    Function F(p1 : Integer; Var p2 : char) : Integer;
-    var f: integer;
      Begin
        f := c1;
      End;
@@ -19,7 +18,7 @@ Program Example6;
      var v2 : t2;
          v3 : char;
      begin
-	    v3 := 'a';
+	v3 := 'a';
         v1 := f(c3,v3);
      end;
 
