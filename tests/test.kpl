@@ -1,6 +1,6 @@
 Program Example6;
    Const c1 = 10;
-  	    c1 = 'a';  (* Duplicate identifier. *)
+  	 c2 = 'a';
    Type t1 = array(. 10 .) of integer;
    Var v1 : Integer;
        v2 : Array(. 10 .) of t1;
@@ -18,7 +18,7 @@ Program Example6;
      var v2 : t2;
          v3 : char;
      begin
-	v3 := 'a';
+	v3 := -'a';
         v1 := f(c3,v3);
      end;
 

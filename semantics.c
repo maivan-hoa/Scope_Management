@@ -81,9 +81,9 @@ Object* checkDeclaredFunction(char* name) {
 
 Object* checkDeclaredProcedure(char* name) {
   Object* obj = lookupObject(name);
-  if (obj == NULL)
+  if (obj == NULL) // Khi không tìm thấy tên định danh đã được khai báo
     error(ERR_UNDECLARED_PROCEDURE,currentToken->lineNo, currentToken->colNo);
-  if (obj->kind != OBJ_PROCEDURE)
+  if (obj->kind != OBJ_PROCEDURE) // Khi lệnh call gọi định danh không phải là thủ tục
     error(ERR_INVALID_PROCEDURE,currentToken->lineNo, currentToken->colNo);
 
   return obj;
@@ -98,7 +98,7 @@ Object* checkDeclaredLValueIdent(char* name) {
     case OBJ_VARIABLE:
     case OBJ_PARAMETER:
       break;
-    case OBJ_FUNCTION: // hàm được gán lại chỉ trong phạm vị của hàm đó (return của một hàm)
+    case OBJ_FUNCTION: // hàm được gán lại chỉ trong phạm vi của hàm đó (return của một hàm)
       if (obj != symtab->currentScope->owner) 
         error(ERR_INVALID_IDENT,currentToken->lineNo, currentToken->colNo);
       break;
